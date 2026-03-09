@@ -51,7 +51,46 @@ try {
         );
     `);
 
-    // Migrate Order table to support tracking and linked accounts
+    // Create Product table
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS Product (
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            description TEXT,
+            price REAL,
+            image TEXT
+        );
+    `);
+
+    // ⭐ ADD THIS PART (seed products)
+    const productCount: any = db.prepare('SELECT COUNT(*) as count FROM Product').get();
+
+    if (productCount.count === 0) {
+        console.log('📦 Seeding starter products...');
+
+        const insert = db.prepare(`
+            INSERT INTO Product (id, name, description, price, image)
+            VALUES (?, ?, ?, ?, ?)
+        `);
+
+        insert.run(
+            't13-figure',
+            'Custom T13 Figure',
+            'Custom articulated T13 3D printed figure',
+            25,
+            '/images/t13.png'
+        );
+
+        insert.run(
+            'keychain',
+            '3D Printed Keychain',
+            'Custom keychain print',
+            10,
+            '/images/keychain.png'
+        );
+    }
+
+    // Migrate Order table
     const orderInfo: any = db.prepare("PRAGMA table_info('Order')").all();
     const hasEmail = orderInfo.some((c: any) => c.name === 'email');
     const hasUserId = orderInfo.some((c: any) => c.name === 'userId');
@@ -60,32 +99,17 @@ try {
         console.log('📦 Migrating database: Adding email to Order table');
         db.exec('ALTER TABLE "Order" ADD COLUMN email TEXT');
     }
+
     if (!hasUserId) {
         console.log('📦 Migrating database: Adding userId to Order table');
         db.exec('ALTER TABLE "Order" ADD COLUMN userId TEXT');
     }
+
     console.log('✅ Database schema verified.');
-} catch (e: any) {
+}
+catch (e: any) {
     console.error('❌ Schema initialization failed:', e.message);
 }
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', { apiVersion: '2026-02-25.clover' as any });
-
-// Simple auth middleware
-const authenticate = (req: any, res: any, next: any) => {
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.split(' ')[1];
-        try {
-            const user = db.prepare('SELECT id, email, name FROM User WHERE token = ?').get(token);
-            if (user) {
-                req.user = user;
-            }
-        } catch (e) { }
-    }
-    next();
-};
-
 app.use(authenticate);
 
 // ---- AUTH ENDPOINTS ----
@@ -489,6 +513,7 @@ async function startTelegramPolling() {
         }
     }
 }
+
 
 
 
