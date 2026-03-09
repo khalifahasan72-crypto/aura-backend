@@ -8,8 +8,7 @@ import Stripe from 'stripe';
 import Database from 'better-sqlite3';
 import crypto from 'crypto';
 import { OAuth2Client } from 'google-auth-library';
-import { sendTelegramOrderNotification, sendTelegramFailedOrder, sendTelegramStatusUpdate } from './backend-utils';
-
+import { sendTelegramOrderNotification, sendTelegramFailedOrder, sendTelegramStatusUpdate } from './backend-utils.ts';
 const googleClient = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID || 'dummy');
 
 const app = express();
@@ -490,5 +489,6 @@ async function startTelegramPolling() {
         }
     }
 }
+
 
 
