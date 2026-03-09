@@ -61,7 +61,35 @@ try {
             image TEXT
         );
     `);
+// Create Order table
+db.exec(`
+CREATE TABLE IF NOT EXISTS "Order" (
+    id TEXT PRIMARY KEY,
+    customerName TEXT,
+    phone TEXT,
+    email TEXT,
+    userId TEXT,
+    notes TEXT,
+    paymentMethod TEXT,
+    paymentStatus TEXT,
+    orderStatus TEXT,
+    total REAL,
+    pickupMethod TEXT,
+    createdAt TEXT
+);
+`);
 
+// Create OrderItem table
+db.exec(`
+CREATE TABLE IF NOT EXISTS OrderItem (
+    id TEXT PRIMARY KEY,
+    orderId TEXT,
+    productId TEXT,
+    quantity INTEGER,
+    unitPrice REAL,
+    customOptionsJSON TEXT
+);
+`);
     // ⭐ ADD THIS PART (seed products)
     const productCount: any = db.prepare('SELECT COUNT(*) as count FROM Product').get();
 
@@ -533,6 +561,7 @@ async function startTelegramPolling() {
         }
     }
 }
+
 
 
 
