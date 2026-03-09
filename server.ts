@@ -109,7 +109,27 @@ try {
 }
 catch (e: any) {
     console.error('❌ Schema initialization failed:', e.message);
-}
+}// Simple auth middleware
+const authenticate = (req: any, res: any, next: any) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+
+        try {
+            const user = db
+                .prepare('SELECT id, email, name FROM User WHERE token = ?')
+                .get(token);
+
+            if (user) {
+                req.user = user;
+            }
+        } catch (e) {}
+    }
+
+    next();
+};
+
 app.use(authenticate);
 
 // ---- AUTH ENDPOINTS ----
@@ -513,6 +533,7 @@ async function startTelegramPolling() {
         }
     }
 }
+
 
 
 
