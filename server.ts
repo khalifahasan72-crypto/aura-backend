@@ -407,7 +407,7 @@ app.listen(PORT, () => {
 });
 
 // --- TELEGRAM BOT POLLING ---
-import { editTelegramMessage } from './backend-utils';
+import { sendTelegramOrderNotification, sendTelegramFailedOrder, sendTelegramStatusUpdate } from './backend-utils.ts';
 
 async function startTelegramPolling() {
     const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -491,3 +491,4 @@ async function startTelegramPolling() {
         }
     }
 }
+
