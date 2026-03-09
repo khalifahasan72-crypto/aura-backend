@@ -399,7 +399,7 @@ app.post('/api/admin/orders/:id/status', (req, res) => {
 
 app.post('/api/stripe/webhook', (req, res) => res.send());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 API running on http://localhost:${PORT}`);
     startTelegramPolling();
@@ -489,6 +489,7 @@ async function startTelegramPolling() {
         }
     }
 }
+
 
 
 
