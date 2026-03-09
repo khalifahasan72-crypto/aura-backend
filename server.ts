@@ -14,9 +14,11 @@ const googleClient = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID || 'dumm
 const app = express();
 
 const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://aura-3d-printing.pages.dev'
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://aura-3d-printing.pages.dev',
+  'https://aura-3d-printings.pages.dev',
+  'https://0720f85a.aura-3d-printings.pages.dev'
 ];
 
 app.use(cors({
@@ -561,6 +563,7 @@ async function startTelegramPolling() {
         }
     }
 }
+
 
 
 
